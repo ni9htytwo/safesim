@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSim 安仿 · 工业安全合规仿真平台</title>
+<meta name="description" content="SafeSim安仿——面向化工、矿山、能源等高危行业的工业安全合规仿真平台。仿真记录即审计凭证，满足《安全生产法》强制演练要求。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F9F6F5;
+  --paper-2:#F0ECEA;
+  --ink:#1C1C1C;
+  --ink-2:#2E2824;
+  --wine:#A84318;
+  --rose:#D1581F;
+  --rose-soft:#E89565;
+  --amber:#9B8C7E;
+  --sage:#AAB99E;
+  --contour:#D8D0CA;
+  --contour-dark:#363030;
+  --text:#3D3530;
+  --text-dim:#8A7E76;
+  --text-inv:#F9F6F5;
+  --text-inv-dim:#9B8C7E;
+  --serif:'Noto Serif SC',serif;
+  --sans:'Noto Sans SC',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --maxw:1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--text);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img,svg{display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:2px}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(249,246,245,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--contour)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:66px;position:relative}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-mark{width:34px;height:34px;flex:none}
+.logo-txt{font-family:var(--serif);font-weight:900;font-size:19px;color:var(--ink);letter-spacing:.5px}
+.logo-txt small{display:block;font-family:var(--mono);font-weight:500;font-size:9.5px;letter-spacing:2.5px;color:var(--text-dim);margin-top:-2px}
+.nav-links{display:flex;gap:34px;align-items:center}
+.nav-links a{font-size:14.5px;font-weight:500;color:var(--text);padding:4px 0;border-bottom:2px solid transparent;transition:.2s}
+.nav-links a:hover{border-color:var(--rose);color:var(--ink)}
+.nav .btn-solid{background:var(--ink);color:var(--paper)}
+.nav .btn-solid:hover{background:var(--wine)}
+.btn{display:inline-block;font-weight:700;font-size:14.5px;padding:11px 26px;border-radius:3px;transition:.2s;border:1.5px solid transparent;cursor:pointer}
+.btn-solid{background:var(--ink);color:var(--paper)}
+.btn-solid:hover{background:var(--wine)}
+.btn-rose{background:var(--rose);color:#fff}
+.btn-rose:hover{background:var(--wine)}
+.btn-line{border-color:var(--ink);color:var(--ink)}
+.btn-line:hover{background:var(--ink);color:var(--paper)}
+.btn-line-inv{border-color:var(--text-inv-dim);color:var(--text-inv)}
+.btn-line-inv:hover{border-color:var(--rose);color:var(--rose)}
+.nav .btn{padding:9px 20px}
+.nav-toggle{display:none;position:absolute;opacity:0;pointer-events:none}
+.nav-burger{display:none;cursor:pointer;width:36px;height:36px;align-items:center;justify-content:center;flex-direction:column;gap:5px;border-radius:4px;transition:.2s}
+.nav-burger:hover{background:rgba(0,0,0,.05)}
+.nav-burger span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.25s}
+.nav-toggle:checked ~ .nav-burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle:checked ~ .nav-burger span:nth-child(2){opacity:0}
+.nav-toggle:checked ~ .nav-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-toggle:checked ~ .nav-links{display:flex;flex-direction:column;position:absolute;top:66px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--contour);padding:16px 32px 24px;gap:0;box-shadow:0 12px 30px -10px rgba(0,0,0,.12)}
+.nav-toggle:checked ~ .nav-links a{padding:12px 0;border-bottom:1px solid var(--contour)}
+.nav-toggle:checked ~ .nav-links .btn{text-align:center;margin-top:8px}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--contour);background:url('heli-1.jpg') center/cover no-repeat}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(28,28,28,.82) 0%,rgba(28,28,28,.55) 50%,rgba(28,28,28,.35) 100%);z-index:0}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(28,28,28,.6));z-index:0}
+.hero .wrap{position:relative;z-index:1}
+.hero-in{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:108px 0 98px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--rose-soft);font-weight:600;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.eyebrow::before{content:"";width:34px;height:1.5px;background:var(--rose-soft)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(38px,4.6vw,58px);line-height:1.22;color:#fff;letter-spacing:.01em;text-shadow:0 2px 20px rgba(0,0,0,.3)}
+h1 em{font-style:normal;color:var(--rose-soft);position:relative;white-space:nowrap}
+h1 em::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:9px;background:var(--rose-soft);opacity:.25;z-index:-1}
+.hero-sub{margin:26px 0 34px;font-size:17.5px;color:rgba(255,255,255,.78);max-width:520px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:58px;border-top:1px solid rgba(255,255,255,.18)}
+.hstat{padding:20px 18px 0 0}
+.hstat+.hstat{border-left:1px solid rgba(255,255,255,.18);padding-left:20px}
+.hstat b{font-family:var(--mono);font-weight:600;font-size:25px;color:#fff;display:block;line-height:1.2}
+.hstat b i{font-style:normal;color:var(--rose-soft);font-size:16px}
+.hstat span{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.5;display:block;margin-top:5px}
+
+/* hero scene */
+.heroscene{position:relative;background:rgba(28,28,28,.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;box-shadow:0 24px 60px -30px rgba(0,0,0,.5)}
+.heroscene svg{width:100%;height:auto}
+.scene-grid{stroke:#fff;stroke-opacity:.06;stroke-width:1}
+.hazmat-zone{fill:var(--rose);fill-opacity:.06;stroke:var(--rose);stroke-width:1;stroke-dasharray:6 4}
+.evac-path{fill:none;stroke:var(--rose);stroke-width:2.5;stroke-dasharray:8 5;stroke-dashoffset:800;animation:evacDraw 2.5s ease 1.8s forwards;opacity:0}
+@keyframes evacDraw{from{opacity:1;stroke-dashoffset:800}to{opacity:1;stroke-dashoffset:0}}
+.worker{opacity:0;animation:pop .5s ease forwards}
+.w1{animation-delay:1s}.w2{animation-delay:1.25s}.w3{animation-delay:1.5s}.w4{animation-delay:1.75s}.w5{animation-delay:2s}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.building{opacity:0;animation:pop .6s ease .4s forwards}
+.pipe{fill:none;stroke:#7A7068;stroke-width:1.5}
+.smoke{opacity:0;animation:smokeRise 3s ease 2.2s infinite}
+@keyframes smokeRise{0%{opacity:0;transform:translateY(0)}20%{opacity:.5}100%{opacity:0;transform:translateY(-40px)}}
+.alert-ring{fill:none;stroke:var(--rose);stroke-width:1.5;opacity:0;animation:alertPulse 2s ease 2.5s infinite}
+@keyframes alertPulse{0%{opacity:.7;r:12}100%{opacity:0;r:36}}
+.scorecard{position:absolute;right:16px;top:16px;background:rgba(28,28,28,.88);color:#fff;border-radius:5px;padding:14px 16px;font-family:var(--mono);font-size:11.5px;line-height:2;min-width:200px;opacity:0;animation:pop .6s ease 3s forwards;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+.scorecard h5{font-family:var(--mono);font-weight:600;font-size:10.5px;letter-spacing:2px;color:var(--rose);margin-bottom:6px}
+.scorecard .row{display:flex;justify-content:space-between;gap:18px}
+.scorecard .row b{color:#fff;font-weight:600}
+.scorecard .ok{color:var(--sage)}
+.scorecard .warn{color:var(--amber)}
+.map-tag{position:absolute;left:16px;bottom:14px;background:rgba(28,28,28,.75);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.15);border-radius:3px;font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;color:var(--rose-soft);padding:5px 10px}
+.map-coord{position:absolute;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px}
+.mc-tl{top:10px;left:14px}.mc-br{bottom:10px;right:14px}
+
+/* ---------- SECTION BASE ---------- */
+section{padding:96px 0}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:3px;font-weight:600;color:var(--rose);text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sec-eyebrow::before{content:"";width:26px;height:1.5px;background:var(--rose)}
+h2{font-family:var(--serif);font-weight:900;font-size:clamp(28px,3.2vw,40px);line-height:1.3;color:var(--ink)}
+.sec-head p{margin-top:18px;color:var(--text-dim);font-size:16.5px}
+.dark{background:var(--ink);color:var(--text-inv)}
+.dark h2{color:#fff}
+.dark .sec-head p{color:var(--text-inv-dim)}
+
+/* ---------- WHY SAFESIM ---------- */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.why-cards{display:flex;flex-direction:column;gap:14px}
+.wcard{border:1px solid var(--contour);border-radius:5px;padding:22px 24px;background:#fff;display:flex;gap:18px;align-items:flex-start;transition:.25s}
+.wcard:hover{border-color:var(--rose);transform:translateX(4px)}
+.wcard .wic{width:44px;height:44px;border-radius:5px;background:rgba(209,88,31,.08);border:1px solid rgba(209,88,31,.18);display:flex;align-items:center;justify-content:center;flex:none}
+.wcard h4{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.wcard p{font-size:13.5px;color:var(--text-dim);line-height:1.65}
+.why-copy h3{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--ink);margin-bottom:14px}
+.why-copy p{color:var(--text-dim);margin-bottom:16px}
+.why-copy .pt{display:flex;gap:12px;margin-top:20px}
+.why-copy .pt svg{flex:none;margin-top:5px}
+.why-copy .pt b{color:var(--ink)}
+.why-copy .pt p{margin:2px 0 0;font-size:14.5px}
+
+/* ---------- MODULES ---------- */
+.mods{background:url('heil-2.jpg') center/cover no-repeat;position:relative}
+.mods::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,28,28,.78) 0%,rgba(28,28,28,.68) 100%);z-index:0}
+.mods .wrap{position:relative;z-index:1}
+.mods .sec-head h2{color:#fff}
+.mods .sec-head p{color:rgba(255,255,255,.65)}
+.mods .sec-eyebrow{color:var(--rose-soft)}
+.mods .sec-eyebrow::before{background:var(--rose-soft)}
+.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.mod-grid.three .mod{grid-column:span 1}
+.mod-grid.three .mod:last-child{grid-column:1 / -1;max-width:calc(50% - 13px)}
+.mod{background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:34px 34px 30px;position:relative;display:flex;flex-direction:column;transition:.25s}
+.mod:hover{transform:translateY(-4px);box-shadow:0 22px 50px -26px rgba(0,0,0,.5);border-color:rgba(255,255,255,.3)}
+.mod-phase{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;font-weight:600;color:var(--rose-soft);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:99px;padding:4px 13px;display:inline-flex;align-self:flex-start;margin-bottom:20px}
+.mod.first .mod-phase{color:#fff;background:var(--rose);border-color:var(--rose)}
+.mod h3{font-family:var(--serif);font-weight:900;font-size:23px;color:#fff}
+.mod h3 small{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:1.5px;color:rgba(255,255,255,.55);display:block;margin-top:4px}
+.mod-desc{font-size:14.5px;color:rgba(255,255,255,.7);margin:14px 0 18px}
+.mod ul{list-style:none;margin-bottom:22px}
+.mod li{font-size:14px;padding:7px 0 7px 22px;position:relative;border-bottom:1px dashed rgba(255,255,255,.12);color:rgba(255,255,255,.75)}
+.mod li:last-child{border-bottom:0}
+.mod li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;border:1.5px solid var(--rose-soft);border-radius:50%}
+.mod-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.15);padding-top:16px}
+.mod-foot .price{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.6)}
+.mod-foot .price b{color:#fff;font-size:14px;font-weight:600}
+.mod-foot a{font-size:13.5px;font-weight:700;color:var(--rose-soft)}
+.mod-foot a:hover{color:var(--rose)}
+.flag{position:absolute;top:30px;right:30px;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--rose-soft);font-weight:600}
+.flag.watch{color:rgba(255,255,255,.5)}
+.flow-note{margin-top:34px;background:rgba(255,255,255,.06);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-left:4px solid var(--rose-soft);border-radius:4px;padding:20px 26px;font-size:14.5px;color:rgba(255,255,255,.7)}
+.flow-note b{color:#fff}
+
+/* ---------- TECH STACK (architecture redesign) ---------- */
+.tech{position:relative}
+.tech::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 79px,rgba(255,255,255,.028) 79px 80px),
+  repeating-linear-gradient(90deg,transparent 0 79px,rgba(255,255,255,.028) 79px 80px);pointer-events:none}
+.tech .wrap{position:relative}
+.tech .sec-head{margin-bottom:20px}
+.read-hint{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:var(--rose);opacity:.8;margin-bottom:44px;display:flex;align-items:center;gap:10px}
+.read-hint svg{flex:none}
+.arch{max-width:880px;margin:0 auto;position:relative}
+.pipes{position:absolute;inset:0;pointer-events:none;z-index:0}
+.pipe{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(209,88,31,.22) 12%,rgba(209,88,31,.22) 88%,transparent)}
+.pipe.p1{left:18%}.pipe.p2{left:50%}.pipe.p3{left:82%}
+.dot{position:absolute;left:-2.5px;width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px 2px rgba(155,140,126,.55);animation:rise 5.5s linear infinite;opacity:0}
+.pipe.p1 .dot{animation-delay:0s}
+.pipe.p2 .dot{animation-delay:1.8s;animation-duration:6.5s}
+.pipe.p3 .dot{animation-delay:3.4s;animation-duration:6s}
+.pipe .dot.d2{animation-delay:2.7s}
+.pipe.p2 .dot.d2{animation-delay:4.9s}
+.pipe.p3 .dot.d2{animation-delay:.9s}
+@keyframes rise{0%{bottom:2%;opacity:0}8%{opacity:1}88%{opacity:1}100%{bottom:97%;opacity:0}}
+.pw{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.pw.on{opacity:1;transform:none}
+.consumers{position:relative;z-index:1;text-align:center;margin-bottom:14px}
+.clabel{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--text-inv-dim);margin-bottom:12px}
+.cchips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cchip{font-size:13.5px;font-weight:700;color:#fff;background:var(--rose);border-radius:3px;padding:8px 18px;letter-spacing:.5px}
+.cchip.ghost{background:transparent;color:var(--text-inv-dim);border:1px dashed var(--contour-dark);font-weight:500}
+.cchip.ghost b{color:var(--rose);font-weight:700}
+.conn{position:relative;z-index:1;height:38px;display:flex;justify-content:center;align-items:center}
+.conn svg{height:38px}
+.conn path{stroke:var(--rose);stroke-width:1.4;fill:none;opacity:.6}
+.frame{position:relative;z-index:1;border:1.5px solid var(--contour-dark);border-radius:8px;padding:54px 26px 26px;background:rgba(28,28,28,.55);backdrop-filter:blur(2px)}
+.frame::before,.frame::after{content:"";position:absolute;width:14px;height:14px;border:1.5px solid var(--rose)}
+.frame::before{top:-1.5px;left:-1.5px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.frame::after{bottom:-1.5px;right:-1.5px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.frame-label{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--ink);border:1.5px solid var(--rose);border-radius:99px;padding:5px 22px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:var(--rose);font-weight:600;white-space:nowrap}
+.frame-note{position:absolute;top:22px;left:0;right:0;text-align:center;font-size:12.5px;color:var(--text-inv-dim)}
+.frame-edge{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px dashed var(--contour-dark)}
+.echip{font-family:var(--mono);font-size:11px;color:var(--text-inv-dim);border:1px solid var(--contour-dark);border-radius:3px;padding:3px 10px;background:rgba(255,255,255,.03)}
+.echip.hl{color:var(--rose);border-color:rgba(209,88,31,.5)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.lrow{position:relative;display:grid;grid-template-columns:64px 250px 1fr;gap:20px;align-items:center;background:var(--ink-2);border:1px solid var(--contour-dark);border-radius:6px;padding:20px 24px;transition:border-color .25s,opacity .3s,transform .25s,box-shadow .25s;cursor:default}
+.stack:hover .lrow{opacity:.45}
+.stack .lrow:hover{opacity:1;border-color:var(--rose);transform:translateX(6px);box-shadow:0 10px 34px -16px rgba(209,88,31,.35)}
+.lmark{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--rose);font-weight:600;display:flex;flex-direction:column;gap:3px}
+.lmark b{font-size:17px;color:var(--amber);font-weight:600}
+.lname{display:flex;align-items:center;gap:14px}
+.lico{width:40px;height:40px;flex:none;border:1px solid var(--contour-dark);border-radius:5px;display:flex;align-items:center;justify-content:center;background:rgba(209,88,31,.08)}
+.lname h4{font-size:16.5px;font-weight:700;color:#fff;line-height:1.35}
+.lname h4 small{display:block;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:1.5px;color:var(--text-inv-dim);margin-top:2px}
+.ldesc{font-size:13.5px;color:var(--text-inv-dim);line-height:1.65}
+.lchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.lchip{font-family:var(--mono);font-size:10.5px;color:var(--text-inv);border:1px solid var(--contour-dark);border-radius:3px;padding:2px 8px;background:rgba(255,255,255,.04)}
+.core{position:relative;border:1.5px solid rgba(209,88,31,.55);border-radius:6px;background:linear-gradient(120deg,rgba(209,88,31,.10),rgba(155,140,126,.07) 55%,rgba(209,88,31,.10));padding:26px 24px 24px;transition:opacity .3s,transform .25s,box-shadow .25s;overflow:hidden}
+.core::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.09) 48%,transparent 62%);transform:translateX(-120%);animation:sheen 6s ease-in-out infinite}
+@keyframes sheen{0%,60%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+.stack:hover .core{opacity:.45}
+.stack .core:hover{opacity:1;transform:translateX(6px);box-shadow:0 14px 44px -16px rgba(209,88,31,.5)}
+.core-tag{position:absolute;top:14px;left:24px;font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--rose);font-weight:600}
+.core-tag b{font-size:15px;margin-right:8px}
+.core-grid{display:grid;grid-template-columns:1fr 128px 1fr;align-items:center;gap:0;margin-top:26px;position:relative}
+.core-half{padding:16px 18px;border:1px solid var(--contour-dark);background:rgba(28,28,28,.6);border-radius:5px}
+.core-half.l{border-right:0;border-radius:5px 0 0 5px;text-align:right}
+.core-half.r{border-left:0;border-radius:0 5px 5px 0}
+.core-half h4{font-size:16.5px;font-weight:700;color:#fff}
+.core-half h4 small{display:block;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:1.5px;color:var(--text-inv-dim);margin-top:2px}
+.core-half p{font-size:12.5px;color:var(--text-inv-dim);margin-top:8px;line-height:1.6}
+.emblem{position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center;z-index:2}
+.emblem .ring{position:absolute;inset:6px;border:1.5px dashed var(--rose);border-radius:50%;animation:spin 22s linear infinite;opacity:.85}
+.emblem .ring2{position:absolute;inset:18px;border:1px solid rgba(170,185,158,.5);border-radius:50%;animation:spin 34s linear infinite reverse}
+.emblem .disc{position:absolute;inset:28px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#3D2E26,#1C1C1C 70%);border:1px solid var(--contour-dark);display:flex;align-items:center;justify-content:center;animation:corepulse 3.2s ease-in-out infinite}
+.emblem .x{font-family:var(--serif);font-weight:900;font-size:34px;color:var(--rose);line-height:1;text-shadow:0 0 18px rgba(209,88,31,.6)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes corepulse{0%,100%{box-shadow:0 0 0 0 rgba(209,88,31,.35)}50%{box-shadow:0 0 0 14px rgba(209,88,31,0)}}
+.core-foot{margin-top:16px;font-size:12.5px;color:var(--text-inv-dim);text-align:center}
+.core-foot b{color:var(--rose)}
+.sources{position:relative;z-index:1;text-align:center;margin-top:14px}
+.schips{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.schip{font-family:var(--mono);font-size:11.5px;color:var(--text-inv);border:1px solid var(--contour-dark);border-radius:3px;padding:6px 14px;background:rgba(255,255,255,.03)}
+.schip small{color:var(--text-inv-dim);margin-left:6px;font-size:10px}
+.takeaway{max-width:880px;margin:52px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tk{border-left:2px solid var(--rose);padding:4px 0 4px 18px}
+.tk b{color:#fff;font-size:14.5px;display:block}
+.tk span{font-size:12.5px;color:var(--text-inv-dim);line-height:1.6;display:block;margin-top:4px}
+@media (max-width:900px){
+  .lrow{grid-template-columns:1fr;gap:12px;padding:20px}
+  .lmark{flex-direction:row;align-items:baseline;gap:10px}
+  .core-grid{grid-template-columns:1fr;gap:0}
+  .core-half.l,.core-half.r{border:1px solid var(--contour-dark);border-radius:5px;text-align:left}
+  .emblem{margin:14px auto;width:104px;height:104px}
+  .pipes{display:none}
+  .stack:hover .lrow,.stack:hover .core{opacity:1}
+  .stack .lrow:hover,.stack .core:hover{transform:none}
+  .takeaway{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .dot,.core::before,.emblem .ring,.emblem .ring2,.emblem .disc{animation:none}
+  .dot{opacity:0}
+  .pw{opacity:1;transform:none;transition:none}
+}
+
+/* ---------- COMPARE ---------- */
+.cmp-scroll{overflow-x:auto;border:1px solid var(--contour);border-radius:6px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:780px}
+th,td{padding:16px 20px;text-align:left;font-size:14px;border-bottom:1px solid var(--contour);vertical-align:top}
+thead th{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;font-weight:600;color:var(--text-dim);background:var(--paper-2);text-transform:uppercase}
+thead th.me{background:var(--ink);color:var(--rose)}
+tbody th{font-weight:700;color:var(--ink);font-size:14.5px;width:170px}
+td.me{background:rgba(209,88,31,.06);font-weight:500;color:var(--ink)}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+.yes{color:var(--wine);font-weight:700}
+.no{color:#B0533A}
+.cmp-note{margin-top:18px;font-size:13px;color:var(--text-dim);font-family:var(--mono)}
+
+/* ---------- LAW / COMPLIANCE ---------- */
+.law{background:var(--paper-2)}
+.law-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.law-points{display:flex;flex-direction:column;gap:22px;margin-top:8px}
+.lp{display:flex;gap:16px}
+.lp .n{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--rose);border:1.5px solid var(--rose);border-radius:50%;width:34px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.lp b{color:var(--ink);font-size:16px}
+.lp p{font-size:14.5px;color:var(--text-dim);margin-top:3px}
+.law-card{background:var(--ink);border-radius:6px;padding:36px 32px;box-shadow:0 24px 60px -30px rgba(60,48,40,.5)}
+.law-card h4{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--rose);margin-bottom:18px;font-weight:600}
+.law-quote{font-family:var(--serif);font-size:18px;color:#fff;line-height:1.8;margin-bottom:16px;position:relative;padding-left:20px;border-left:3px solid var(--rose)}
+.law-src{font-family:var(--mono);font-size:11px;color:var(--text-inv-dim);letter-spacing:1px}
+
+/* ---------- CTA ---------- */
+.cta{background:var(--ink);position:relative;overflow:hidden}
+.cta .contour-bg{position:absolute;inset:0;opacity:.12;pointer-events:none}
+.cta .wrap{position:relative;text-align:center;max-width:760px}
+.cta h2{color:#fff;margin-bottom:18px}
+.cta p{color:var(--text-inv-dim);font-size:17px;margin-bottom:34px}
+.cta .mono-line{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--rose);margin-top:30px}
+
+/* ---------- FOOTER ---------- */
+footer{background:#141210;color:var(--text-inv-dim);padding:64px 0 36px;font-size:14px}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:44px;margin-bottom:44px}
+.foot-grid h5{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--rose);margin-bottom:16px;font-weight:600}
+.foot-grid a{display:block;padding:4px 0;color:var(--text-inv-dim)}
+.foot-grid a:hover{color:#fff}
+.foot-brand p{margin-top:14px;font-size:13px;line-height:1.8;max-width:300px}
+.foot-bottom{border-top:1px solid var(--contour-dark);padding-top:24px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;letter-spacing:1px}
+
+/* ---------- REVEAL ---------- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .evac-path,.worker,.building,.smoke,.alert-ring,.scorecard{animation:none;opacity:1;stroke-dashoffset:0}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1020px){
+  .hero-in,.why-grid,.law-grid{grid-template-columns:1fr;gap:44px}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .hstat{border-left:0!important;padding-left:0!important}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .mod-grid.three .mod:last-child{max-width:100%}
+}
+@media (max-width:720px){
+  .nav-burger{display:flex}
+  .nav-links{display:none}
+  .mod-grid{grid-template-columns:1fr}
+  .mod-grid.three .mod:last-child{max-width:100%}
+  section{padding:68px 0}
+  .wrap{padding:0 22px}
+  .hero-in{padding:68px 0 72px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .mod-grid.three .mod:last-child{max-width:100%}
+  h1{font-size:clamp(28px,6vw,42px)}
+  h2{font-size:clamp(24px,5vw,32px)}
+  .heroscene{margin-top:10px}
+  .scorecard{position:relative;right:auto;top:auto;margin-top:12px;opacity:1}
+  .law-grid{gap:36px}
+  .law-card{padding:28px 24px}
+  .foot-bottom{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top" aria-label="SafeSim 安仿首页">
+      <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="1" y="1" width="38" height="38" rx="4" fill="#1C1C1C"/>
+        <path d="M10 28 L20 10 L30 28 Z" fill="none" stroke="#D1581F" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="20" cy="22" r="3" fill="none" stroke="#AAB99E" stroke-width="1.8"/>
+        <line x1="20" y1="19" x2="20" y2="15" stroke="#AAB99E" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-txt">安仿<small>SAFESIM</small></span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="展开菜单">
+    <label for="nav-toggle" class="nav-burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <div class="nav-links">
+      <a href="#why">为什么安仿</a>
+      <a href="#modules">产品模块</a>
+      <a href="#tech">技术平台</a>
+      <a href="#compare">对比</a>
+      <a href="#compliance">合规依据</a>
+      <a class="btn btn-solid" href="#demo">预约演练演示</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">天域世界 SkyWorld · 工业安全合规仿真</div>
+      <h1>高危行业强制演练的<br>数字化解法，<br><em>仿真记录即审计凭证</em></h1>
+      <p class="hero-sub">SafeSim 安仿——面向化工、矿山、能源等高危行业的工业安全合规仿真平台。将《安全生产法》的强制演练义务转化为可量化的数字资产，审计检查一键调档。</p>
+      <div class="hero-cta">
+        <a class="btn btn-rose" href="#demo">用真实场景预约演示</a>
+        <a class="btn btn-line-inv" href="#modules">查看产品模块</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><b>10<i>年</i></b><span>VR + 3D 仿真<br>工程化积累</span></div>
+        <div class="hstat"><b>100<i>+</i></b><span>机构基于天域底座<br>完成项目交付</span></div>
+        <div class="hstat"><b>0<i>次</i></b><span>单次演练停产损失<br>→ 数字演练零成本</span></div>
+        <div class="hstat"><b>∞<i>次</i></b><span>不限考核人次<br>按岗位类型授权</span></div>
+      </div>
+    </div>
+    <div class="heroscene" role="img" aria-label="化工安全演练仿真场景示意：化工设施泄漏扩散VR仿真，人员疏散路径与演练评分卡">
+      <svg viewBox="0 0 560 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g>
+          <line class="scene-grid" x1="140" y1="0" x2="140" y2="480"/>
+          <line class="scene-grid" x1="280" y1="0" x2="280" y2="480"/>
+          <line class="scene-grid" x1="420" y1="0" x2="420" y2="480"/>
+          <line class="scene-grid" x1="0" y1="120" x2="560" y2="120"/>
+          <line class="scene-grid" x1="0" y1="240" x2="560" y2="240"/>
+          <line class="scene-grid" x1="0" y1="360" x2="560" y2="360"/>
+        </g>
+        <ellipse class="hazmat-zone" cx="230" cy="200" rx="120" ry="90"/>
+        <g class="building">
+          <rect x="180" y="160" width="60" height="80" rx="3" fill="none" stroke="#8A7E76" stroke-width="1.8"/>
+          <rect x="195" y="170" width="12" height="12" fill="none" stroke="#8A7E76" stroke-width="1"/>
+          <rect x="215" y="170" width="12" height="12" fill="none" stroke="#8A7E76" stroke-width="1"/>
+          <rect x="195" y="190" width="12" height="12" fill="none" stroke="#8A7E76" stroke-width="1"/>
+          <rect x="215" y="190" width="12" height="12" fill="none" stroke="#8A7E76" stroke-width="1"/>
+          <text x="210" y="256" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="rgba(255,255,255,.5)">储罐区</text>
+        </g>
+        <g class="building">
+          <rect x="300" y="180" width="40" height="50" rx="2" fill="none" stroke="#8A7E76" stroke-width="1.5"/>
+          <text x="320" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">泵房</text>
+        </g>
+        <path class="pipe" d="M240 200 L300 200"/>
+        <path class="pipe" d="M240 220 L280 220 L280 260"/>
+        <g class="building">
+          <circle cx="260" cy="200" r="5" fill="var(--rose)" opacity=".7"/>
+          <circle class="alert-ring" cx="260" cy="200" r="12"/>
+          <circle class="alert-ring" cx="260" cy="200" r="12" style="animation-delay:3.2s"/>
+          <text x="268" y="192" font-family="IBM Plex Mono" font-size="9" fill="var(--rose)" font-weight="600">泄漏点</text>
+        </g>
+        <g class="smoke"><ellipse cx="250" cy="185" rx="28" ry="12" fill="var(--rose)" opacity=".12"/></g>
+        <g class="smoke" style="animation-delay:2.8s"><ellipse cx="240" cy="175" rx="35" ry="15" fill="var(--rose)" opacity=".08"/></g>
+        <path class="evac-path" d="M210 210 L150 260 L100 320 L80 380"/>
+        <path class="evac-path" d="M220 230 L170 290 L130 350 L110 400" style="animation-delay:2.1s"/>
+        <g class="worker w1" transform="translate(200,215)"><circle cx="0" cy="0" r="5" fill="var(--wine)"/><text x="8" y="4" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">P-01</text></g>
+        <g class="worker w2" transform="translate(230,230)"><circle cx="0" cy="0" r="5" fill="var(--wine)"/><text x="8" y="4" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">P-02</text></g>
+        <g class="worker w3" transform="translate(155,270)"><circle cx="0" cy="0" r="5" fill="var(--wine)"/><text x="8" y="4" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">P-03</text></g>
+        <g class="worker w4" transform="translate(110,335)"><circle cx="0" cy="0" r="5" fill="var(--sage)"/><text x="8" y="4" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">指挥</text></g>
+        <g class="worker w5" transform="translate(90,390)"><rect x="-6" y="-6" width="12" height="12" fill="none" stroke="var(--sage)" stroke-width="1.5"/><text x="10" y="4" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,.5)">集合点</text></g>
+        <g class="worker w5"><rect x="60" y="375" width="60" height="35" rx="3" fill="none" stroke="var(--sage)" stroke-width="1.2" stroke-dasharray="4 3"/><text x="90" y="420" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--sage)">安全集合区</text></g>
+      </svg>
+      <span class="map-coord mc-tl">SCENARIO · 化工泄漏应急演练</span>
+      <span class="map-coord mc-br">VR 仿真 · 多人协同</span>
+      <span class="map-tag">DEMO · 标准场景库</span>
+      <div class="scorecard" aria-hidden="true">
+        <h5>演练评估报告</h5>
+        <div class="row"><span>响应时间</span><b>2 分 18 秒</b></div>
+        <div class="row"><span>人员到位率</span><b class="ok">100%</b></div>
+        <div class="row"><span>操作合规性</span><b class="ok">✓ 达标</b></div>
+        <div class="row"><span>报告格式</span><b class="ok">✓ 备案合规</b></div>
+        <div class="row"><span>改进项</span><b class="warn">2 项待优化</b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= WHY SAFESIM ================= -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Why SafeSim · 定位</div>
+      <h2>不卖 VR 体验，<br>卖合规数字凭证</h2>
+      <p>SafeSim 的核心不是画面有多真实——而是演练记录能否在安全检查时直接调档，格式是否精确对齐监管备案要求。</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-cards reveal">
+        <div class="wcard">
+          <div class="wic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><path d="M11 2 L19 7 V15 L11 20 L3 15 V7 Z"/><path d="M8 11 L10 13 L14.5 8.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>法律强制，不是自愿购买</h4><p>《安全生产法》第二十五条要求高危行业建立应急演练制度并留存记录。客户的采购动机是合规，不是价值判断——付款机制天然确定。</p></div>
+        </div>
+        <div class="wcard">
+          <div class="wic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><rect x="3" y="4" width="16" height="14" rx="2"/><path d="M7 4 V2 M15 4 V2"/><path d="M3 10 H19"/><path d="M7 14 H10 M7 17 H13"/></svg></div>
+          <div><h4>演练记录 = 审计凭证</h4><p>每次演练的时间戳、操作步骤、人员到位情况全程自动记录，报告一键生成，格式直接对齐应急管理部备案要求。</p></div>
+        </div>
+        <div class="wcard">
+          <div class="wic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><path d="M11 7 V11 L14 14" stroke-linecap="round"/><path d="M7 3 L5 1 M15 3 L17 1"/></svg></div>
+          <div><h4>零停产成本，无限次重复</h4><p>替代一次实体演练的场地+人工+临时停产成本（大型化工厂单次 50–200 万），SafeSim 买断后可无限次重复演练，边际成本趋近于零。</p></div>
+        </div>
+        <div class="wcard">
+          <div class="wic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><path d="M4 18 V8 L11 3 L18 8 V18 H4 Z"/><path d="M9 18 V13 H13 V18"/></svg></div>
+          <div><h4>数据积累构建护城河</h4><p>客户演练记录的数据积累随时间增值——历史对比分析、改进趋势追踪。这是时间积累的优势，不是技术壁垒，第一年建立，第三年稳固。</p></div>
+        </div>
+      </div>
+      <div class="why-copy reveal">
+        <h3>付款机制是最强护城河</h3>
+        <p>合规仿真市场容易出现低价复制者。SafeSim 的真正壁垒不在技术——在于报告格式精确对齐监管备案要求、场景库覆盖度、以及客户演练记录的数据积累。这些是时间和交付质量构建的优势。</p>
+        <div class="pt">
+          <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="none" stroke="#D1581F" stroke-width="2"/><path d="M5.5 9.2 8 11.6 12.8 6.4" fill="none" stroke="#D1581F" stroke-width="2" stroke-linecap="round"/></svg>
+          <div><b>客户不需要被说服"要不要买"</b><p>法律已经替您做了决定。客户只需要选供应商——SafeSim 做那个最合规的选择。</p></div>
+        </div>
+        <div class="pt">
+          <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="none" stroke="#D1581F" stroke-width="2"/><path d="M5.5 9.2 8 11.6 12.8 6.4" fill="none" stroke="#D1581F" stroke-width="2" stroke-linecap="round"/></svg>
+          <div><b>从安全部门到培训部门，同一家企业横向扩展</b><p>Module 1 的安全部门客户 → 自然引荐给培训部门/人力资源，决策链短，预算独立。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MODULES ================= -->
+<section class="mods" id="modules">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Products · 三个模块</div>
+      <h2>覆盖强制演练 → 岗位认证 → 低空安全</h2>
+      <p>将监管合规义务转化为可购买的数字化产品。法律要求变成产品规格，合规记录变成数字资产。</p>
+    </div>
+    <div class="mod-grid three">
+      <article class="mod first reveal">
+        <span class="flag">首单切入点</span>
+        <span class="mod-phase">强制合规核心</span>
+        <h3>应急演练仿真<small>SAFESIM · DRILL</small></h3>
+        <p class="mod-desc">化工泄漏、矿山坍塌、高危设备故障——标准场景 VR 仿真库。演练过程自动记录，报告一键生成，格式直接对齐应急管理部备案要求。</p>
+        <ul>
+          <li>10–15 个标准事故场景 VR 仿真库</li>
+          <li>演练过程全程自动记录（时间戳 · 操作步骤 · 人员到位）</li>
+          <li>演练报告一键生成，符合应急管理部备案格式</li>
+          <li>场景参数可调（人员规模 · 事故等级 · 天气条件）</li>
+          <li>多人协同演练（指挥 / 执行角色分离）</li>
+          <li>历史演练数据对比分析与改进趋势追踪</li>
+        </ul>
+        <div class="mod-foot">
+          <span class="price">License 买断 · <b>30–50 万</b> / 场景库</span>
+          <a href="#demo">预约演示 →</a>
+        </div>
+      </article>
+      <article class="mod reveal">
+        <span class="flag" style="color:var(--amber)">横向扩展</span>
+        <span class="mod-phase">岗位资质认证</span>
+        <h3>操作认证仿真<small>SAFESIM · CERT</small></h3>
+        <p class="mod-desc">高危岗位上岗资格虚拟认证考核。不限考核人次，按岗位类型授权——大型化工企业一个岗位类型数百人认证，摊到每人成本极低。</p>
+        <ul>
+          <li>起重机 / 受限空间 / 高压电气等高危岗位认证</li>
+          <li>考核成绩与操作步骤全程记录</li>
+          <li>认证状态数字存档与到期自动提醒</li>
+          <li>HR 系统对接接口（认证状态实时同步）</li>
+          <li>不限考核人次（按岗位类型 License）</li>
+          <li>与演练模块共享用户体系，同企业横向扩展</li>
+        </ul>
+        <div class="mod-foot">
+          <span class="price">License 买断 · <b>10–20 万</b> / 岗位类型</span>
+          <a href="#demo">了解认证方案 →</a>
+        </div>
+      </article>
+      <article class="mod reveal">
+        <span class="flag watch">12 个月后评估</span>
+        <span class="mod-phase">中期观察</span>
+        <h3>低空安全认证仿真<small>SAFESIM · AIR</small></h3>
+        <p class="mod-desc">无人机飞手 CAAC 认证科目仿真训练、空域申请流程模拟、紧急避障场景演练。监管细则仍在变化，技术就绪但等待政策落地。</p>
+        <ul>
+          <li>无人机飞手 CAAC 认证科目仿真训练</li>
+          <li>空域申请流程模拟</li>
+          <li>紧急避障场景演练</li>
+          <li>认证记录存档（对齐 CAAC 格式）</li>
+          <li>技术迁移成本低，政策落地后可快速跟进</li>
+          <li>观察模块，暂不主动投入开发资源</li>
+        </ul>
+        <div class="mod-foot">
+          <span class="price">定价待定 · <b>视政策落地</b></span>
+          <a href="#compliance">了解合规依据 →</a>
+        </div>
+      </article>
+    </div>
+    <div class="flow-note reveal">
+      <b>推荐采购路径：</b>从应急演练仿真起步——直接满足《安全生产法》强制演练要求，决策链在安全部门，无需高管审批。首单成功后，向培训部门/人力资源横向扩展操作认证模块，在同一企业内实现第二条增长线。低空安全模块视监管细则落地情况自然触发。
+    </div>
+  </div>
+</section>
+
+<!-- ================= TECH STACK ================= -->
+<section class="dark tech" id="tech">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Platform · 技术底座</div>
+      <h2>SkyWorld 平台：十年打磨的<br>GIS × 游戏引擎融合底座</h2>
+      <p>一条自下而上的数据流水线：多源场景数据入库，汇入双引擎融合内核，经合规引擎增强后从任意终端交付——整条链路封装在一套信创合规的私有化运行底座之内。</p>
+    </div>
+    <div class="read-hint reveal">
+      <svg width="14" height="18" viewBox="0 0 14 18" fill="none"><path d="M7 16 V3 M7 3 L2.5 7.5 M7 3 L11.5 7.5" stroke="#D1581F" stroke-width="1.6" stroke-linecap="round"/></svg>
+      自下而上阅读 · 数据的旅程 = 平台的架构
+    </div>
+    <div class="arch" id="arch">
+      <div class="pipes" aria-hidden="true">
+        <div class="pipe p1"><span class="dot"></span><span class="dot d2"></span></div>
+        <div class="pipe p2"><span class="dot"></span><span class="dot d2"></span></div>
+        <div class="pipe p3"><span class="dot"></span><span class="dot d2"></span></div>
+      </div>
+      <div class="consumers pw" data-step="6">
+        <div class="clabel">▲ 数据的终点 · 产品与业务</div>
+        <div class="cchips">
+          <span class="cchip">应急演练仿真</span>
+          <span class="cchip">操作认证仿真</span>
+          <span class="cchip">低空安全认证</span>
+          <span class="cchip ghost"><b>SkyField 天域场</b> · 共享同一底座</span>
+        </div>
+      </div>
+      <div class="conn pw" data-step="5" aria-hidden="true">
+        <svg viewBox="0 0 60 38"><path d="M30 34 V8 M30 8 L24 15 M30 8 L36 15"/></svg>
+      </div>
+      <div class="frame">
+        <div class="frame-label pw" data-step="0">私有化部署 × 信创运行底座</div>
+        <p class="frame-note pw" data-step="0">以下所有能力，均可完整运行在企业本地服务器与国产化环境中 · 数据不出域 · 7 天上线</p>
+        <div class="stack">
+          <div class="lrow pw" data-step="4">
+            <div class="lmark"><b>L4</b>交付层</div>
+            <div class="lname">
+              <div class="lico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><ellipse cx="11" cy="11" rx="3.5" ry="8"/><path d="M3.5 11 h15"/></svg></div>
+              <h4>VR / 浏览器 / 大屏接入层<small>ACCESS ANYWHERE</small></h4>
+            </div>
+            <div class="ldesc">同一份仿真场景，指挥员在大屏上调度，安全员在 VR 头显中演练，考核人员在浏览器中评分——终端不同，数据同源。
+              <div class="lchips"><span class="lchip">主流 VR 头显</span><span class="lchip">浏览器免插件</span><span class="lchip">平板考核端</span><span class="lchip">大屏指挥中心</span></div>
+            </div>
+          </div>
+          <div class="lrow pw" data-step="3">
+            <div class="lmark"><b>L3</b>合规层</div>
+            <div class="lname">
+              <div class="lico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><path d="M4 18 V6 H18 V18 H4 Z"/><path d="M4 6 L11 2 L18 6"/><path d="M8 12 H14 M8 15 H12"/></svg></div>
+              <h4>合规报告与审计引擎<small>COMPLIANCE REPORTING</small></h4>
+            </div>
+            <div class="ldesc">在仿真内核之上做"可审计"的合规：自动记录演练全过程、生成备案格式报告、追踪人员认证状态——重复劳动交给系统。
+              <div class="lchips"><span class="lchip">演练报告自动生成</span><span class="lchip">应急管理部备案格式</span><span class="lchip">认证状态追踪</span><span class="lchip">HR 系统对接</span></div>
+            </div>
+          </div>
+          <div class="core pw" data-step="2">
+            <div class="core-tag"><b>L2</b>仿真内核 · SIMULATION CORE</div>
+            <div class="core-grid">
+              <div class="core-half l"><h4>GIS 空间数据引擎<small>TERRAIN &amp; GEODATA</small></h4><p>工厂设施三维建模 · 大场景地形渲染 · 多坐标系统——从厂区级到设备级，无级缩放。</p></div>
+              <div class="emblem" aria-hidden="true"><span class="ring"></span><span class="ring2"></span><span class="disc"><span class="x">×</span></span></div>
+              <div class="core-half r"><h4>游戏引擎级渲染管线<small>REAL-TIME RENDERING</small></h4><p>PBR 物理材质 · 实时光影 · 粒子系统——烟雾扩散、液体泄漏的高保真事故场景还原。</p></div>
+            </div>
+            <p class="core-foot">两台引擎共用同一份空间数据、同一个坐标系统——<b>这个"×"是国内罕有对标的能力组合</b>，也是 SafeSim 一切模块的心脏。</p>
+          </div>
+          <div class="lrow pw" data-step="1">
+            <div class="lmark"><b>L1</b>数据层</div>
+            <div class="lname">
+              <div class="lico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="#D1581F" stroke-width="1.6"><path d="M11 2 L19 6.5 V15.5 L11 20 L3 15.5 V6.5 Z"/><path d="M11 2 V11 M11 11 L19 6.5 M11 11 L3 6.5"/></svg></div>
+              <h4>多源场景数据建库<small>SCENE DATA FUSION</small></h4>
+            </div>
+            <div class="ldesc">五种来源、一套建库标准。数据在此完成清洗、配准与统一坐标——一次入库，应急演练、操作认证、合规审计三阶段全程复用。
+              <div class="lchips"><span class="lchip">自动配准</span><span class="lchip">统一坐标</span><span class="lchip">版本管理</span><span class="lchip">增量更新</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-edge pw" data-step="0">
+          <span class="echip hl">x86_64</span><span class="echip hl">ARM 鲲鹏/飞腾</span><span class="echip hl">MIPS 龙芯</span><span class="echip hl">SW-64 申威</span>
+          <span class="echip">统信 UOS</span><span class="echip">麒麟 OS</span><span class="echip">鸿蒙适配</span><span class="echip">离线单机（安全隔离区）</span>
+        </div>
+      </div>
+      <div class="conn pw" data-step="0" aria-hidden="true"><svg viewBox="0 0 60 38"><path d="M30 34 V8 M30 8 L24 15 M30 8 L36 15"/></svg></div>
+      <div class="sources pw" data-step="0">
+        <div class="clabel">● 数据的起点 · 多源采集</div>
+        <div class="schips">
+          <span class="schip">倾斜摄影<small>OSGB</small></span>
+          <span class="schip">激光点云<small>LAS/LAZ</small></span>
+          <span class="schip">BIM 模型<small>IFC/RVT</small></span>
+          <span class="schip">事故场景库<small>STD</small></span>
+          <span class="schip">岗位认证标准<small>CAAC/安监</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="tk pw" data-step="7"><b>为什么快</b><span>场景数据只建一次库。工厂建模直通应急演练与合规审计，不做重复采集与转换。</span></div>
+      <div class="tk pw" data-step="7"><b>为什么稳</b><span>底座经国防级项目十年验证后才进入工业安全领域——SafeSim 站在成熟平台上，而非从零搭建。</span></div>
+      <div class="tk pw" data-step="7"><b>为什么合规</b><span>整条流水线封装在信创兼容的私有化环境里，从数据入库到 VR 演练，全程不出企业服务器。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARE ================= -->
+<section id="compare">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">Why SafeSim · 对比</div>
+      <h2>数字仿真演练 vs 传统实体演练</h2>
+      <p>不是替代真实演练——而是把演练变成可重复、可追溯、可审计的数字资产。每次演练的成本趋近于零，记录格式直接对齐监管要求。</p>
+    </div>
+    <div class="cmp-scroll reveal">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col" class="me">SafeSim 安仿</th>
+            <th scope="col">传统实体演练</th>
+            <th scope="col">通用 VR 培训</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">单次演练成本</th><td class="me"><span class="yes">≈ 0</span> 买断后无限次</td><td>50–200 万 / 次（停产+场地+人工）</td><td>需额外购买，按次计费</td></tr>
+          <tr><th scope="row">演练记录审计</th><td class="me"><span class="yes">✓</span> 自动生成备案格式报告</td><td>人工整理，格式不统一</td><td><span class="no">✗</span> 无合规报告功能</td></tr>
+          <tr><th scope="row">监管格式对齐</th><td class="me"><span class="yes">✓</span> 精确对齐应急管理部标准</td><td>因企业而异</td><td><span class="no">✗</span> 无监管格式支持</td></tr>
+          <tr><th scope="row">场景可重复性</th><td class="me"><span class="yes">✓</span> 无限次重复，参数可调</td><td>每次需重新布置</td><td>有限重复</td></tr>
+          <tr><th scope="row">多人协同演练</th><td class="me"><span class="yes">✓</span> 指挥/执行角色分离</td><td><span class="yes">✓</span></td><td>部分支持</td></tr>
+          <tr><th scope="row">历史数据对比</th><td class="me"><span class="yes">✓</span> 自动趋势分析</td><td><span class="no">✗</span> 纸质/分散记录</td><td><span class="no">✗</span></td></tr>
+          <tr><th scope="row">私有化部署</th><td class="me"><span class="yes">✓</span> 国产 CPU 全架构</td><td>不适用</td><td>部分支持</td></tr>
+          <tr><th scope="row">岗位认证考核</th><td class="me"><span class="yes">✓</span> 不限人次，HR 对接</td><td>需外部认证机构</td><td><span class="no">✗</span> 无认证功能</td></tr>
+          <tr><th scope="row">整体拥有成本（3年）</th><td class="me">License 买断 + 场景扩展</td><td>每年多次实体演练累计成本极高</td><td>持续订阅费 + 无合规价值</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp-note">* 对比基于项目投标场景与公开信息整理，2026-06。</p>
+  </div>
+</section>
+
+<!-- ================= COMPLIANCE / LAW ================= -->
+<section class="law" id="compliance">
+  <div class="wrap law-grid">
+    <div class="reveal">
+      <div class="sec-eyebrow">Compliance · 合规依据</div>
+      <h2>法律要求变成<br>产品规格</h2>
+      <p style="margin-top:18px;color:var(--text-dim)">SafeSim 的产品设计从监管法规出发——每一项功能规格都对应具体的法律条款要求。不是先做产品再找市场，而是法律义务直接定义产品。</p>
+      <div class="law-points">
+        <div class="lp"><span class="n">01</span><div><b>《安全生产法》第二十五条</b><p>生产经营单位应当建立应急演练制度，定期组织演练并留存记录。——这是法律义务，不是自愿选择。</p></div></div>
+        <div class="lp"><span class="n">02</span><div><b>《安全生产法》第七十七条</b><p>生产安全事故罚款上限大幅提高。演练记录是证明企业履行了安全义务的核心审计凭证。</p></div></div>
+        <div class="lp"><span class="n">03</span><div><b>应急管理部备案格式要求</b><p>演练报告需包含时间、参与人员、操作步骤、改进措施等要素——SafeSim 报告模板精确对齐这些要素。</p></div></div>
+      </div>
+    </div>
+    <div class="law-card reveal" role="img" aria-label="安全生产法关键条款引用">
+      <h4>关键法律条款</h4>
+      <div class="law-quote">生产经营单位应当建立应急演练制度，根据本单位的事故风险特点，每年至少组织一次综合应急预案演练或者专项应急预案演练，每半年至少组织一次现场处置方案演练。</div>
+      <div class="law-src" style="margin-bottom:24px">——《中华人民共和国安全生产法》第二十五条</div>
+      <div class="law-quote" style="font-size:16px">演练过程应当记录，演练结束后应当进行评估，并形成演练评估报告。</div>
+      <div class="law-src">——《生产安全事故应急预案管理办法》第三十三条</div>
+      <div style="margin-top:28px;padding:16px;border:1px solid var(--contour-dark);border-radius:4px;background:rgba(209,88,31,.08)">
+        <p style="font-size:13px;color:var(--text-inv-dim);line-height:1.7;margin:0"><span style="color:var(--rose);font-weight:700">SafeSim 的产品响应：</span><span style="color:#fff">每次 VR 演练自动生成包含时间戳、操作步骤、人员到位记录与改进建议的演练评估报告，格式直接对齐上述法规的备案要求。审计检查时一键调档，无需人工整理。</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" id="demo">
+  <svg class="contour-bg" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,340 C240,300 380,360 640,320 C900,280 1040,340 1440,290" fill="none" stroke="#D1581F" stroke-width="1.2"/>
+    <path d="M0,280 C260,235 420,300 680,255 C940,212 1100,275 1440,225" fill="none" stroke="#D1581F" stroke-width="1.2"/>
+    <path d="M0,215 C280,168 460,235 720,188 C980,142 1160,205 1440,158" fill="none" stroke="#D1581F" stroke-width="1.2"/>
+    <path d="M0,150 C300,102 500,168 760,122 C1020,78 1220,138 1440,92" fill="none" stroke="#D1581F" stroke-width="1.2"/>
+  </svg>
+  <div class="wrap">
+    <h2>用一个真实演练场景，<br>看结果再决定</h2>
+    <p>提供贵企业的一个典型事故场景，我们用 SafeSim 完成一次完整的 VR 演练演示，并生成一份符合应急管理部备案格式的演练报告样本。您评估的不是 PPT，而是您自己的合规解法。</p>
+    <a class="btn btn-rose" href="mailto:safesim@skyworld.example" style="font-size:16px;padding:14px 40px">预约演练演示</a>
+    <a class="btn btn-line-inv" href="#modules" style="font-size:16px;padding:14px 32px;margin-left:12px">下载产品手册</a>
+    <div class="mono-line">DEMO 周期 ≈ 2 周 · 支持私有化部署 · 全程签署保密协议</div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#top" style="filter:brightness(1.15)">
+          <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+            <rect x="1" y="1" width="38" height="38" rx="4" fill="#2E2824"/>
+            <path d="M10 28 L20 10 L30 28 Z" fill="none" stroke="#D1581F" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="20" cy="22" r="3" fill="none" stroke="#AAB99E" stroke-width="1.8"/>
+            <line x1="20" y1="19" x2="20" y2="15" stroke="#AAB99E" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span class="logo-txt" style="color:#fff">安仿<small>SAFESIM</small></span>
+        </a>
+        <p>SafeSim 安仿是天域世界（SkyWorld）旗下工业安全合规仿真品牌。天域世界成立于 2016 年，GIS 与游戏引擎融合平台已服务国防、能源、政务等领域逾百家机构。</p>
+      </div>
+      <div>
+        <h5>产品</h5>
+        <a href="#modules">应急演练仿真</a>
+        <a href="#modules">操作认证仿真</a>
+        <a href="#modules">低空安全认证</a>
+        <a href="#demo">预约演示</a>
+      </div>
+      <div>
+        <h5>平台</h5>
+        <a href="#tech">SkyWorld 技术底座</a>
+        <a href="#tech">信创兼容矩阵</a>
+        <a href="#compare">竞争对比</a>
+        <a href="#compliance">合规依据</a>
+      </div>
+      <div>
+        <h5>天域世界</h5>
+        <a href="#top">关于我们</a>
+        <a href="#top">SkyField 天域场 · 新能源空间智能 ↗</a>
+        <a href="#demo">联系商务</a>
+        <a href="#demo">成为渠道伙伴</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 天域世界 SKYWORLD · SAFESIM 安仿</span>
+      <span>仿真记录即审计凭证 · BUILT FOR COMPLIANCE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// scroll reveal
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// tech architecture: power-on sequence, layers light up bottom-up
+const arch = document.getElementById('arch');
+if (arch){
+  const steps = document.querySelectorAll('.pw');
+  const io2 = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      io2.disconnect();
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      steps.forEach(el=>{
+        const d = reduced ? 0 : (+el.dataset.step) * 320;
+        setTimeout(()=>el.classList.add('on'), d);
+      });
+    });
+  },{threshold:.18});
+  io2.observe(arch);
+}
+
+// mobile menu: close on link click
+const navToggle = document.getElementById('nav-toggle');
+if (navToggle){
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.addEventListener('click',()=>{ navToggle.checked = false; });
+  });
+}
+</script>
+</body>
+</html>
